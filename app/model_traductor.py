@@ -1,0 +1,1 @@
+from .model_traductor_original import Traductor, OpenAI_FashionTraductor

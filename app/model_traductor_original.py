@@ -1,18 +1,25 @@
 import re
-import time,os
+import time, os
 from datetime import datetime
+from dotenv import load_dotenv
 from openai import OpenAI
 import openai
 
-api_key = os.getenv("OPENAI_API_KEY")
+load_dotenv()
+
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+OPENAI_ASSISTANT_ID = os.environ['OPENAI_ASSISTANT_ID']
+OPENAI_THREAD_ID = os.environ['OPENAI_THREAD_ID']
+
+
 class OpenAI_FashionTraductor:
 
-    def __init__(self,api_key,days_to_delete_logs=7):
+    def __init__(self, api_key, days_to_delete_logs=7):
         self.api_key = api_key
-        self.assistant_id = None
+        self.assistant_id = OPENAI_ASSISTANT_ID
         self.client = OpenAI(api_key=api_key)
         self.assistant = self.client.beta.assistants.retrieve(assistant_id=self.assistant_id)
-        self.threads = [self.client.beta.threads.retrieve(thread_id="thread_YlIR1fqI2xucBD2riUQCffA6")] if self.client.beta.threads.retrieve(thread_id="thread_YlIR1fqI2xucBD2riUQCffA6") else []
+        self.threads = [self.client.beta.threads.retrieve(thread_id=OPENAI_THREAD_ID)] if self.client.beta.threads.retrieve(thread_id=OPENAI_THREAD_ID) else []
         self._delete_old_logs(days_to_delete_logs)
 
     def _write_log(self,msg,status:str='NONE'):
@@ -259,7 +266,7 @@ class OpenAI_FashionTraductor:
 
 
 class Traductor(OpenAI_FashionTraductor):
-    def __init__(self,db,api_key=key):
+    def __init__(self, db, api_key=OPENAI_API_KEY):
         super().__init__(api_key)
         self.thread_id = self.get_main_thread().id
         self._db = db
