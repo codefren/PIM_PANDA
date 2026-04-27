@@ -1,0 +1,41 @@
+# Entorno virtual
+backups/
+env/
+venv/
+.venv/
+uploads/
+failes_req_trace/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Variables de entorno
+.env
+.flaskenv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Base de datos local
+*.db
+*.sqlite3
+
+# Archivos de configuración IIS
+web.config

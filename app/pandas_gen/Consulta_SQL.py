@@ -14,9 +14,9 @@ WITH Tariffs AS (
         MAX(CASE WHEN at.fldIdTarifa = '14' THEN at.fldtalla1 END) AS t14,
         MAX(CASE WHEN at.fldIdTarifa = '66' THEN at.fldtalla1 END) AS t66,
         MAX(CASE WHEN at.fldIdTarifa = '67' THEN at.fldtalla1 END) AS t67,
-        MAX(CASE WHEN at.fldIdTarifa = '68' THEN at.fldtalla1 END) AS t68
+        MAX(CASE WHEN at.fldIdTarifa = '12' THEN at.fldtalla1 END) AS t68
     FROM tbdArticulosTarifas at
-    WHERE at.fldIdTarifa IN ('11','12','13', '60','61','63','62','65','14','66','67','68')
+    WHERE at.fldIdTarifa IN ('11','12','13', '60','61','63','62','65','14','66','67','12')
     GROUP BY at.fldIdArticulo
 )
 SELECT 
