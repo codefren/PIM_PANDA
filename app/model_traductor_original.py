@@ -17,7 +17,7 @@ class OpenAI_FashionTraductor:
     def __init__(self, api_key, days_to_delete_logs=7):
         self.api_key = api_key
         self.assistant_id = OPENAI_ASSISTANT_ID
-        self.client = OpenAI(api_key=api_key)
+        self.client = OpenAI(api_key=api_key, default_headers={"OpenAI-Beta": "assistants=v2"})
         self.assistant = self.client.beta.assistants.retrieve(assistant_id=self.assistant_id)
         self.threads = [self.client.beta.threads.retrieve(thread_id=OPENAI_THREAD_ID)] if self.client.beta.threads.retrieve(thread_id=OPENAI_THREAD_ID) else []
         self._delete_old_logs(days_to_delete_logs)
