@@ -497,7 +497,7 @@ class PandasGen:
 
         # Crear una nueva columna a_uvp[fb{x}] para cada columna a_vk_old[fb{x}]
         current_app.logger.info('Creating_a_uvp_columns')
-        vk_old_columns = [col for col in self.df.columns if 'a_vk_old[fb' in col]
+        vk_old_columns = [col for col in self.df.columns if 'a_vk_old[fb' in col or col == 'a_vk_old[ayfd]']
 
         for col in vk_old_columns:
             col_idx = self.df.columns.get_loc(col) + 1
