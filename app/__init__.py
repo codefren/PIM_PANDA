@@ -9,8 +9,8 @@ from flask_jwt_extended import (
 from flask_jwt_extended import get_jwt
 from flask_mail import Mail
 #from flask_cors import CORS
-from .config import server, bddatos, user, pwd, Secret_key, Mail_username, Mail_server, Mail_port, Mail_password, \
-    Mail_use_tls, Mail_use_ssl, LANGUAGES, API_URL, server_clients,bddatos_clients
+from .config import server, bddatos, user, pwd, Secret_key, JWT_secret_key, Mail_username, Mail_server, Mail_port, \
+    Mail_password, Mail_use_tls, Mail_use_ssl, LANGUAGES, API_URL, server_clients, bddatos_clients
 from .forms import LoginForm
 from .model_db import Database
 from logging.handlers import RotatingFileHandler
@@ -39,17 +39,29 @@ def create_app():
 
 
     # Setup logging
+    log_fmt = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+
     handler = RotatingFileHandler('info_log.log', maxBytes=10000, backupCount=3)
     handler.setLevel(logging.INFO)
+    handler.setFormatter(log_fmt)
     app.logger.addHandler(handler)
 
     handler2 = RotatingFileHandler('error_log.log', maxBytes=10000, backupCount=3)
     handler2.setLevel(logging.ERROR)
+    handler2.setFormatter(log_fmt)
     app.logger.addHandler(handler2)
 
     handler3 = RotatingFileHandler('critical_log.log', maxBytes=10000, backupCount=3)
     handler3.setLevel(logging.CRITICAL)
+    handler3.setFormatter(log_fmt)
     app.logger.addHandler(handler3)
+
+    # Propagate DB logs to the same handlers
+    db_logger = logging.getLogger('app.model_db')
+    db_logger.setLevel(logging.DEBUG)
+    for h in (handler, handler2, handler3):
+        db_logger.addHandler(h)
+    app.logger.setLevel(logging.DEBUG)
 
     #CORS(app)
     # JWT setup
@@ -63,8 +75,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = Mail_password
     app.config['MAIL_USE_TLS'] = Mail_use_tls
     app.config['MAIL_USE_SSL'] = Mail_use_ssl
-    app.config[
-        'JWT_SECRET_KEY'] = 'dc1eef81a751379480222f45ec26361ef543a6205e0f2f4a401a6f0d3076800b5053a128628ca6d14230f48c2e6d41c92dd98e5202f9fa3e35ab55d4e4ce8cce'
+    app.config['JWT_SECRET_KEY'] = JWT_secret_key
     app.config['JWT_BLACKLIST_ENABLED'] = True
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     app.config['DB'] = Database(driver='ODBC Driver 18 for SQL Server', srv_name=server, db_name=bddatos, username=user,

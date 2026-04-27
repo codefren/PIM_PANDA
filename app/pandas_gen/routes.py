@@ -14,28 +14,32 @@ from .. import set_db
 @pandas_gen_bp.route('/get_header_data/', methods=['GET'])
 @jwt_required()
 def get_header_data():
+    current_app.logger.info(f"{datetime.now().strftime('%d/%m/%Y - %H:%M:%S')} GET /get_header_data/ - user: {get_jwt_identity()}")
     db = current_app.config.get('DB_CLIENTS')
     if not db:
         user_id = get_jwt_identity()
-
         db = set_db(user_id)
         if not db:
             current_app.logger.error(
-                f"{datetime.now().strftime('%d/%m/%Y - %H:%M:%S')} Error with db, connection not setted \ {current_app.config.get('DB_CLIENTS', 'None')}")
+                f"{datetime.now().strftime('%d/%m/%Y - %H:%M:%S')} Error with db, connection not setted - {current_app.config.get('DB_CLIENTS', 'None')}")
             return {'status': 'error', 'message': 'No database connection'}, 500
     db.connect()
-    pag = PandasGen(db)
-    data = {
-        'Proveedor': pag.get_proveedores(),
-        'Familia': pag.get_familias(),
-        'Subfamilia': pag.get_subfamilias(),
-        'Temporada': pag.get_temporadas(),
-        'Subtemporada': pag.get_subtemporadas(),
-        'Genero': pag.get_generos(),
-        'Marca': pag.get_marcas()
-    }
-
-    return {'status': 'ok', 'message': data}, 200
+    try:
+        pag = PandasGen(db)
+        data = {
+            'Proveedor': pag.get_proveedores(),
+            'Familia': pag.get_familias(),
+            'Subfamilia': pag.get_subfamilias(),
+            'Temporada': pag.get_temporadas(),
+            'Subtemporada': pag.get_subtemporadas(),
+            'Genero': pag.get_generos(),
+            'Marca': pag.get_marcas()
+        }
+        current_app.logger.info(f"{datetime.now().strftime('%d/%m/%Y - %H:%M:%S')} GET /get_header_data/ - completed successfully")
+        return {'status': 'ok', 'message': data}, 200
+    except Exception as e:
+        current_app.logger.error(f"{datetime.now().strftime('%d/%m/%Y - %H:%M:%S')} GET /get_header_data/ - error: {e}")
+        return {'status': 'error', 'message': str(e)}, 500
 
 
 @pandas_gen_bp.route('/get_csv_pandas_aboutyou/', methods=['POST'])

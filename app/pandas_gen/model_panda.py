@@ -17,12 +17,8 @@ class PandasGen:
         self.traductor = Traductor(db=self.db)
         self.tmp_traductions = pd.DataFrame(columns=["l_ori","l_dest","text_ori","text_dest"])
 
-    def filter_blanks_data(self,data:list):
-        for i in data:
-            r = [str(j).replace(' ','') for j in i]
-            if not all(r):
-                data.remove(i)
-        return data
+    def filter_blanks_data(self, data: list):
+        return [i for i in data if all(str(j).replace(' ', '') for j in i)]
 
     def get_proveedores(self):
         self.db.execute("select fldidproveedor, fldnombrefiscal from tbdproveedores")
