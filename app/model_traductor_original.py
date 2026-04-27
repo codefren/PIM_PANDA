@@ -4,7 +4,7 @@ from datetime import datetime
 from openai import OpenAI
 import openai
 
-key = None
+api_key = None
 class OpenAI_FashionTraductor:
 
     def __init__(self,api_key,days_to_delete_logs=7):
